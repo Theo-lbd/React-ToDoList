@@ -1,5 +1,5 @@
 import React , { useEffect, useState } from 'react';
-import TodoList from './components/TodoList';
+import TodoList from './components/ToDoList';
 import AddTodoForm from './components/AddTodoForm';
 import axios from 'axios';
 import { motion } from "framer-motion";
@@ -8,10 +8,13 @@ import { motion } from "framer-motion";
 const API_URL = 'http://localhost:3000/tasks';
 const App = () => {
   
-  const [tasks, setTasks] = useState<{ id: number; title: string; completed: boolean }[]>([]);
+  const [tasks, setTasks] = useState<{ id: number; title: string; completed: boolean; priority: string }[]>([]);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
-
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+  
     useEffect(() => {
       axios
         .get(API_URL)
@@ -26,18 +29,32 @@ const App = () => {
         setFilter(savedFilter);
       }
     }, []);
-  
-  const handleAddTask = (title: string) => {
-    const newTask = { title, completed: false };
-    axios
-      .post(API_URL, newTask)
-      .then((response) => {
-        setTasks([...tasks, response.data]);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de l'ajout de la tâche :", error);
+    const toggleDarkMode = () => {
+      setDarkMode((prevMode) => {
+        const newMode = !prevMode;
+        localStorage.setItem("darkMode", String(newMode));
+        return newMode;
       });
-  };
+    };
+    useEffect(() => {
+      if (darkMode) {
+        document.body.classList.add("dark");
+        document.querySelector(".container")?.classList.add("dark-container");
+      } else {
+        document.body.classList.remove("dark");
+        document.querySelector(".container")?.classList.remove("dark-container");
+      }
+    }, [darkMode]);    
+    
+    const handleAddTask = (title: string, priority: string) => {
+      const newTask = { title, completed: false, priority };
+      
+      axios.post(API_URL, newTask)
+        .then((response) => {
+          setTasks([...tasks, response.data]);
+        })
+        .catch(() => console.error("Erreur lors de l'ajout de la tâche"));
+    };
 
   const toggleTask = (taskId: number) => {
     const task = tasks.find(task => task.id === taskId);
@@ -96,12 +113,15 @@ const App = () => {
   return (
     <div  className="container">
       <h1 className="title">ToDo List</h1>
+      <button onClick={toggleDarkMode} className="dark-mode-button">
+        {darkMode ? "☀️ Mode Clair" : "🌙 Mode Sombre"}
+      </button>
+
       <input
         type="text"
         placeholder="Rechercher une tâche..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border px-2 py-1 mb-4 w-full"
       />
       <div className="filter-buttons">
         <button onClick={() => handleFilterChange ("all")}>Toutes</button>

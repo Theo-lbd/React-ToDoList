@@ -2,11 +2,21 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type TaskProps = {
-  task: { id: number; title: string; completed: boolean };
+  task: { id: number; title: string; completed: boolean; priority: string };
   onToggle: (taskId: number) => void;
   onDelete: (taskId: number) => void;
   onEdit: (taskId: number, newTitle: string) => void;
 };
+
+const getPriorityClass = (priority: string) => {
+  switch (priority) {
+    case "high": return "priority-high";
+    case "medium": return "priority-medium";
+    case "low": return "priority-low";
+    default: return "priority-default";
+  }
+};
+
 
 const Task = ({ task, onToggle, onDelete, onEdit }: TaskProps) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,6 +24,7 @@ const Task = ({ task, onToggle, onDelete, onEdit }: TaskProps) => {
 
   return (
     <motion.li
+      className="task-item"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }} 
@@ -45,15 +56,16 @@ const Task = ({ task, onToggle, onDelete, onEdit }: TaskProps) => {
           </motion.span>
         )}
       </AnimatePresence>
-
-      <div className="flex gap-2">
+      <motion.span className={`priority-badge ${getPriorityClass(task.priority)}`}>
+        {task.priority === "high" ? "Haute" : task.priority === "medium" ? "Moyenne" : "Basse"}
+      </motion.span>
+      <div>
         {isEditing ? (
           <button
             onClick={() => {
               onEdit(task.id, editText);
               setIsEditing(false);
             }}
-            className="bg-green-500 text-white px-2 py-1"
           >
             💾
           </button>

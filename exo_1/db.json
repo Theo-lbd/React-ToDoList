@@ -1,35 +1,22 @@
 {
   "tasks": [
     {
-      "id": "4",
-      "title": "task 4sqfdsds",
-      "complete": false,
-      "completed": false
-    },
-    {
-      "id": "314e",
-      "title": "ddqs",
-      "completed": true
-    },
-    {
-      "id": "6da5",
-      "title": "café",
-      "completed": true
-    },
-    {
-      "id": "748a",
+      "id": "5d1b",
       "title": "dsq",
-      "completed": true
+      "completed": false,
+      "priority": "high"
     },
     {
-      "id": "9966",
-      "title": "sd",
-      "completed": false
+      "id": "9b0b",
+      "title": "dsq",
+      "completed": false,
+      "priority": "low"
     },
     {
-      "id": "fa22",
-      "title": "caféfq",
-      "completed": false
+      "id": "8c92",
+      "title": "dsq",
+      "completed": false,
+      "priority": "medium"
     }
   ]
 }
